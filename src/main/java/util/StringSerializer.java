@@ -1,4 +1,6 @@
-package offheapmap;
+package util;
+
+import offheapmap.Serializer;
 
 public class StringSerializer implements Serializer {
 

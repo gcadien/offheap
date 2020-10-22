@@ -1,5 +1,8 @@
 package offheapmap;
 
+import util.IntegerSerializer;
+import util.StringSerializer;
+
 import java.util.*;
 
 public class EfficientHashMap<K,V> implements Map<K,V>{
@@ -19,12 +22,12 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
     @Override
     public int size() {
-        return 0;
+        return memMap.numElements;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return (memMap.numElements==0);
     }
 
     @Override
@@ -40,7 +43,14 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
     @Override
     public V remove(Object o) {
-        return null;
+
+        K key = (K) o;
+        map.remove(key);
+
+        memMap.delete(key);
+
+        return null;  // deviates from map convention of returning older object.
+
     }
 
     @Override
@@ -97,14 +107,6 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
     }
 
-    public void delete(K key)
-    {
-        map.remove(key);
-
-        memMap.delete(key);
-
-
-    }
 
     protected void resize()
     {
@@ -113,7 +115,7 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
 
 
-        static class CustomLinkedHashMap<K,V> extends LinkedHashMap<K,V>
+    static class CustomLinkedHashMap<K,V> extends LinkedHashMap<K,V>
     {
 
         int size;
@@ -141,69 +143,6 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
         }
     }
 
-
-    public static void main(String[] args) throws Exception {
-
-        StringSerializer ser = new StringSerializer();
-        IntegerSerializer iser = new IntegerSerializer();
-
-        EfficientHashMap<Integer,String> map = new EfficientHashMap<>(100, 10000000,iser,ser );
-
-
-        System.out.println(Runtime.getRuntime().freeMemory());
-
-        for (int j=0;j<10000;j++) {
-
-            for (int i = 0; i < 250; i++) {
-                map.put(j*i, "Generic World int key " + (j*i));
-
-                // map.put(200, "GENERIC WORLD INT key");
-
-            }
-
-            //System.out.println(map.get(j*1)  + "  " + j);
-
-         /*   for (int i = 0; i < 250; i++) {
-
-               // System.out.println(map.get(j*i));
-
-                map.delete(j*i);
-
-
-            }*/
-
-        }
-
-        System.gc();
-
-        Thread.sleep(5000);
-
-        System.out.println(Runtime.getRuntime().freeMemory());
-
-
-   /*     System.out.println();
-
-
-
-        map.resize();
-
-        System.out.println(map.get(100));
-
-        System.out.println(map.get(200));
-
-
-        map.delete(100);
-
-        System.out.println("Retrieving deleted key " + map.get(100));*/
-
-
-        map.put(100,"Key put again after deletion");
-
-        System.out.println(map.get(100));
-
-
-
-    }
 
 
 

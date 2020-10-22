@@ -1,6 +1,7 @@
-package offheapmap;
+package util;
 
 import com.google.common.primitives.Ints;
+import offheapmap.Serializer;
 
 public class IntegerSerializer implements Serializer {
 

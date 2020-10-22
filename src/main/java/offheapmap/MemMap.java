@@ -14,10 +14,10 @@ MappedByteBuffer out = file.getChannel()
  */
 public class MemMap<K,V> {
 
-    int recordSize;
-    int totalElements;
+    final int recordSize;
+    final int totalElements;
 
-    int memMapSize ;
+    final int memMapSize ;
 
     ByteBuffer buffer ;
 
@@ -28,6 +28,8 @@ public class MemMap<K,V> {
 
     Serializer keySerializer ;
     Serializer valueSerializer;
+
+    int numElements=0;
 
     public MemMap(int recordSize, int totalElements, Serializer keySerializer , Serializer valueSerializer)
     {
@@ -94,6 +96,7 @@ public class MemMap<K,V> {
                     K curr = getKey();
                     if (key.equals(curr))
                     {
+                        // overwriting current key , so do not change elements counter.
                         putRecord(serKey,serValue,location);
                         return;
                     }
@@ -108,12 +111,14 @@ public class MemMap<K,V> {
                     {
                         putRecord(serKey,serValue,location);
                     }
+                    numElements++;
                     return ;
                 case DELETED :
                     curr = getKey();
                     if (key.equals(curr))
                     {
                         putRecord(serKey,serValue,location);
+                        numElements++;
                         return;
                     }
                     else if (!deletedinPath)
@@ -266,6 +271,7 @@ public class MemMap<K,V> {
             {
                buffer.position(location);
                buffer.put(DELETED);
+               numElements--;
 
                 return;
             }
