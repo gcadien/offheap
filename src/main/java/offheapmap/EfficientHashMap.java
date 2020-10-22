@@ -56,6 +56,8 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
 
+        map.entrySet().stream().forEach(entry -> put(entry.getKey(),entry.getValue()));
+
     }
 
     @Override

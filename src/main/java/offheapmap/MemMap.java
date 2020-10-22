@@ -69,7 +69,7 @@ public class MemMap<K,V> {
             throw new RuntimeException("Record size exceeds max specified , size = "+  length + ",max allowed = " + recordSize);
     }
 
-    public void put(K key, V value)
+    protected void put(K key, V value)
     {
         byte[] serKey = keySerializer.serialize(key) ;
         byte[] serValue = valueSerializer.serialize(value);
@@ -177,7 +177,7 @@ public class MemMap<K,V> {
     }
 
 
-    public Optional<V> get(K key)
+    protected Optional<V> get(K key)
     {
         int hash = Math.abs(key.hashCode());
 
@@ -236,7 +236,7 @@ public class MemMap<K,V> {
     }
 
 
-    public void delete(K key)
+    protected void delete(K key)
     {
         int hash = Math.abs(key.hashCode());
 
