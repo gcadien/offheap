@@ -75,6 +75,28 @@ public class MapTester {
     }
 
 
+    @Test public void testClear()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+        map.put(1,"Hello");
+
+        map.clear();
+
+
+        assert(map.isEmpty());
+
+        map.put(1,"Again");
+
+        assert(!map.isEmpty());
+
+    }
+
+
+
 
     //TODO - see why its hanging
     @Test public void test1()  throws Exception {

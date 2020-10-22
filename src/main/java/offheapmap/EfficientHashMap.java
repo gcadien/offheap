@@ -63,6 +63,10 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
     @Override
     public void clear() {
 
+        map.clear();
+
+        memMap.clear();
+
     }
 
     @Override

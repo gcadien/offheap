@@ -1,17 +1,12 @@
 package offheapmap;
 
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-//TODO - make generic
-
-//TODO - associate with a file
-
-/*
-MappedByteBuffer out = file.getChannel()
-                                        .map(FileChannel.MapMode.READ_WRITE, 0, length);
- */
 public class MemMap<K,V> {
 
     final int recordSize;
@@ -52,6 +47,16 @@ public class MemMap<K,V> {
 
 
 
+    }
+
+    public void clear()
+    {
+        numElements=0;
+        buffer.position(0);
+        for (int i=0;i<memMapSize;i++)
+        {
+            buffer.put(EMPTY);
+        }
     }
 
 
@@ -321,12 +326,34 @@ public class MemMap<K,V> {
         }
 
 
+        destroyBuffer(orig.buffer);  // without this the direct buffer stays in memory.
 
         return resized;
 
 
 
 
+    }
+
+    public static void destroyBuffer(Buffer buffer) {
+        if(buffer.isDirect()) {
+            try {
+                if(!buffer.getClass().getName().equals("java.nio.DirectByteBuffer")) {
+                    Field attField = buffer.getClass().getDeclaredField("att");
+                    attField.setAccessible(true);
+                    buffer = (Buffer) attField.get(buffer);
+                }
+
+                Method cleanerMethod = buffer.getClass().getMethod("cleaner");
+                cleanerMethod.setAccessible(true);
+                Object cleaner = cleanerMethod.invoke(buffer);
+                Method cleanMethod = cleaner.getClass().getMethod("clean");
+                cleanMethod.setAccessible(true);
+                cleanMethod.invoke(cleaner);
+            } catch(Exception e) {
+                throw new RuntimeException("Could not destroy direct buffer " + buffer, e);
+            }
+        }
     }
 
 
