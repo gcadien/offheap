@@ -26,6 +26,8 @@ public class MemMap<K,V> {
 
     int numElements=0;
 
+    int numSpots=0;  // a new put will add to this. delete will not reduce this. update in place will not increase this.
+
     public MemMap(int recordSize, int totalElements, Serializer keySerializer , Serializer valueSerializer)
     {
         this.recordSize = recordSize;
@@ -61,6 +63,7 @@ public class MemMap<K,V> {
     public void clear()
     {
         numElements=0;
+        numSpots=0;
         buffer.position(0);
         for (int i=0;i<memMapSize;i++)
         {
@@ -69,7 +72,7 @@ public class MemMap<K,V> {
     }
 
 
-    // TODO - resize when empty elements are 25% of total size
+   //TODO - refactor the navigation in each method to common functions.
 
 
     // also assumes max elements not exceeded - ie atleast one empty spot to break the infinite loop.
@@ -101,6 +104,8 @@ public class MemMap<K,V> {
         boolean deletedinPath=false;
         int firstDeletedLocation=-1;
 
+        int loopCounter=0;
+
         while(true)
         {
             byte type = buffer.get();
@@ -126,6 +131,7 @@ public class MemMap<K,V> {
                         putRecord(serKey,serValue,location);
                     }
                     numElements++;
+                    numSpots++;
                     return ;
                 case DELETED :
                     curr = getKey();
@@ -140,6 +146,9 @@ public class MemMap<K,V> {
                         deletedinPath=true;
                         firstDeletedLocation = location;
                     }
+                    break;
+                default :
+                    System.out.println("Type unknown - this should not happen");
 
             }
             ++index;
@@ -149,6 +158,12 @@ public class MemMap<K,V> {
             {
                 location=0;
                 index = 0;
+                loopCounter++;
+                if (loopCounter>1) {
+                    System.out.println("Put encountered some unknown bug") ;
+                    break;
+                }
+
             }
             buffer.position(location);
 
@@ -201,6 +216,8 @@ public class MemMap<K,V> {
 
         buffer.position(location);
 
+        int loopCounter=0;
+
 
         byte type;
         while((type=buffer.get())!=EMPTY)
@@ -239,6 +256,12 @@ public class MemMap<K,V> {
             {
                 location=0;
                 index = 0;
+                loopCounter++;
+
+                if (loopCounter>1) {
+                    System.out.println("Get encountered some unknown bug") ;
+                    break;
+                }
             }
             buffer.position(location);
 
@@ -261,6 +284,7 @@ public class MemMap<K,V> {
         buffer.position(location);
 
 
+        int loopCounter=0;
         byte type;
         while((type=buffer.get())!=EMPTY)
         {
@@ -297,6 +321,11 @@ public class MemMap<K,V> {
             {
                 location=0;
                 index = 0;
+                loopCounter++;
+                if (loopCounter>1) {
+                    System.out.println("Delete encountered some unknown bug") ;
+                    break;
+                }
             }
             buffer.position(location);
 
@@ -308,17 +337,17 @@ public class MemMap<K,V> {
     }
 
 
-    protected static<K,V> MemMap<K, V> resize(MemMap<K,V> orig)
+    protected static<K,V> MemMap<K, V> resize(MemMap<K,V> orig, int factor)
     {
 
-        MemMap<K,V> resized = new MemMap<>(orig.recordSize,orig.totalElements*2, orig.keySerializer,orig.valueSerializer);
+        MemMap<K,V> resized = new MemMap<>(orig.recordSize,orig.totalElements*factor, orig.keySerializer,orig.valueSerializer);
 
 
         ByteBuffer buffer = orig.buffer;
 
         for (int i=0;i<orig.totalElements;i++)
         {
-            if (buffer.get()!=EMPTY) {
+            if (buffer.get()==OCCUPIED) {
                 int len = buffer.getInt();
                 byte[] b = new byte[len];
                 buffer.get(b);

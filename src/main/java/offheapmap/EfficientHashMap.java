@@ -87,14 +87,26 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
     @Override
     public V put(K key, V value) {
 
-        if ((memMap.numElements/memMap.totalElements)*100>=75)
-        {
-            resize();
-        }
+
+        checkAndResize();
+
 
         memMap.put(key,value);
 
         return null;   //TODO - to fix this
+    }
+
+
+    private void checkAndResize()
+    {
+        if ((memMap.numElements/memMap.totalElements)*100>=75)
+        {
+            resize(2);
+        }
+        else if ((memMap.numSpots/memMap.totalElements)*100>=75)  // gets rid of the deleted records
+        {
+            resize(1);
+        }
     }
 
     @Override
@@ -119,9 +131,9 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
     }
 
 
-    protected void resize()
+    protected void resize(int factor)
     {
-        memMap = MemMap.resize(memMap);
+        memMap = MemMap.resize(memMap,factor);
     }
 
 
