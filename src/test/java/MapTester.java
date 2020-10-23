@@ -52,6 +52,29 @@ public class MapTester {
 
     }
 
+    @Test public void testKeySet()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+
+        for (int i=0;i<100;i++) {
+
+            map.put(i, String.valueOf(i));
+
+        }
+
+
+
+      //  System.out.println(map.keySet());
+
+        assert(map.keySet().size()==100);
+
+    }
+
+
 
     @Test public void testEmpty()
     {

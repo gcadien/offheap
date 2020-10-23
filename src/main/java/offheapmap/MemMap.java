@@ -5,7 +5,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class MemMap<K,V> {
 
@@ -206,6 +208,7 @@ public class MemMap<K,V> {
     }
 
 
+
     protected Optional<V> get(K key)
     {
         int hash = Math.abs(key.hashCode());
@@ -280,6 +283,30 @@ public class MemMap<K,V> {
 
 
     }
+
+    public Set<K> keySet()
+    {
+
+        Set<K> keys = new HashSet<>();
+        buffer.position(0);
+
+        for (int i=0;i<totalElements;i++)
+        {
+            if (buffer.get()==OCCUPIED) {
+                int len = buffer.getInt();
+                byte[] b = new byte[len];
+                buffer.get(b);
+                K key = (K) keySerializer.deserialize(b);
+                keys.add(key);
+            }
+            buffer.position(recordSize*i);
+
+        }
+
+        return keys;
+
+    }
+
 
     public boolean containsValue(V value)
     {

@@ -76,7 +76,7 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
     @Override
     public Set<K> keySet() {
-        return null;
+        return memMap.keySet();
     }
 
     @Override
