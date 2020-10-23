@@ -87,6 +87,11 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
     @Override
     public V put(K key, V value) {
 
+        if ((memMap.numElements/memMap.totalElements)*100>=75)
+        {
+            resize();
+        }
+
         memMap.put(key,value);
 
         return null;   //TODO - to fix this

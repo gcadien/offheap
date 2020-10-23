@@ -34,7 +34,16 @@ public class MemMap<K,V> {
         this.keySerializer = keySerializer;
         this.valueSerializer = valueSerializer;
 
-        memMapSize = recordSize*totalElements;
+        long tmp = (long)recordSize*(long)totalElements;
+
+        if (tmp>Integer.MAX_VALUE) {
+            tmp = Integer.MAX_VALUE;
+
+            System.out.println("Size exceeds max integer value , capping the size to " + tmp);
+
+        }
+
+        memMapSize = (int) tmp;
 
         buffer = ByteBuffer.allocateDirect(memMapSize);
 

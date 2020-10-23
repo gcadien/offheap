@@ -96,6 +96,42 @@ public class MapTester {
     }
 
 
+    @Test public void testReSize()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 100, iser, ser);
+
+        int orig = map.size();
+
+        for (int i=0;i<1000;i++) {
+
+            map.put(i, "Hello");
+        }
+
+
+        int curr = map.size();
+
+        assert(curr>orig);
+
+    }
+
+
+    @Test public void testMemMapallocation()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        int size = Integer.MAX_VALUE;
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, size, iser, ser);
+
+        // will throw an exception if cannot allocate .
+
+    }
+
+
 
 
     //TODO - see why its hanging
