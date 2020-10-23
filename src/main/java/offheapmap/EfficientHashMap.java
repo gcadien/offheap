@@ -33,13 +33,16 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
     @Override
     public boolean containsKey(Object o) {
 
-      return memMap.containsKey((K)o);
+
+      return map.containsKey(o) || memMap.containsKey((K)o);
 
     }
 
+    // has to traverse the entire collection - void using this method.
     @Override
     public boolean containsValue(Object o) {
-        return false;
+
+        return map.containsValue(o) || memMap.containsValue((V)o);
     }
 
 

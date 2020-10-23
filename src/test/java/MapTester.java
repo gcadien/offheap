@@ -117,6 +117,28 @@ public class MapTester {
 
     }
 
+    @Test public void testContainsKeyAndValue()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 10000, iser, ser);
+
+        for (int i=0;i<1000;i++) {
+
+            map.put(i, "Hello" +i);
+        }
+
+        for (int i=0;i<1000;i++) {
+
+            assert(map.containsKey(i));
+            assert(map.containsValue("Hello"+i));
+        }
+
+
+
+    }
+
 
     @Test public void testMemMapallocation()
     {

@@ -281,6 +281,32 @@ public class MemMap<K,V> {
 
     }
 
+    public boolean containsValue(V value)
+    {
+            buffer.position(0);
+
+            for (int i=0;i<totalElements;i++)
+            {
+                if (buffer.get()==OCCUPIED) {
+                    int len = buffer.getInt();
+                    buffer.position(buffer.position()+len);
+                    len = buffer.getInt();
+                    byte[] b = new byte[len];
+                    buffer.get(b);
+                    V value1 = (V) valueSerializer.deserialize(b);
+
+                    if (value.equals(value1))
+                        return true;
+                }
+                buffer.position(recordSize*i);
+
+            }
+            return false;
+
+
+    }
+
+
 
 
     protected void delete(K key)
@@ -354,6 +380,8 @@ public class MemMap<K,V> {
 
 
         ByteBuffer buffer = orig.buffer;
+
+        buffer.position(0);
 
         for (int i=0;i<orig.totalElements;i++)
         {
