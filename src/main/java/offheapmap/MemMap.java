@@ -273,6 +273,16 @@ public class MemMap<K,V> {
     }
 
 
+    public boolean containsKey(K key)
+    {
+       Optional<V> value = get(key);
+       return value.isPresent();
+
+
+    }
+
+
+
     protected void delete(K key)
     {
         int hash = Math.abs(key.hashCode());

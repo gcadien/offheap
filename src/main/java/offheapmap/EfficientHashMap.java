@@ -32,7 +32,9 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
     @Override
     public boolean containsKey(Object o) {
-        return false;
+
+      return memMap.containsKey((K)o);
+
     }
 
     @Override
