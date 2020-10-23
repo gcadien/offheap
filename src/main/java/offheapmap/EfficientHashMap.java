@@ -54,7 +54,7 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
         memMap.delete(key);
 
-        return null;  // deviates from map convention of returning older object.
+        return null;  // TODO - deviates from map convention of returning older object. fix it .
 
     }
 
@@ -81,11 +81,14 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
 
     @Override
     public Collection<V> values() {
-        return null;
+
+        return memMap.values();
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
+
+
         return null;
     }
 

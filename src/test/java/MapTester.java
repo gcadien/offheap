@@ -72,6 +72,26 @@ public class MapTester {
 
         assert(map.keySet().size()==100);
 
+
+    }
+
+    @Test public void testValues()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+
+        for (int i=0;i<100;i++) {
+
+            map.put(i, "Hello World " + i);
+
+        }
+
+
+        assert(map.values().size()==100);
+
     }
 
 
