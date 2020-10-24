@@ -185,6 +185,33 @@ public class MapTester {
     }
 
 
+    @Test public void testRemove()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+        for (int i=0;i<10;i++) {
+
+            String value = "Hello" + i;
+
+             map.put(i, value);
+
+             String oldRes = map.remove(i);
+
+            assert(value.equals(oldRes));
+
+
+
+        }
+
+
+
+    }
+
+
+
 
 
     @Test public void testReSize()

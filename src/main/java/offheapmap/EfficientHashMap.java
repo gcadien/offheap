@@ -52,9 +52,8 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
         K key = (K) o;
         map.remove(key);
 
-        memMap.delete(key);
+        return memMap.delete(key);
 
-        return null;  // TODO - deviates from map convention of returning older object. fix it .
 
     }
 

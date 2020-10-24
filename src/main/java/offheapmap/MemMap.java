@@ -413,7 +413,7 @@ public class MemMap<K,V> {
 
 
 
-    protected void delete(K key)
+    protected V delete(K key)
     {
         int hash = Math.abs(key.hashCode());
 
@@ -425,6 +425,8 @@ public class MemMap<K,V> {
 
 
         int loopCounter=0;
+        V result = null;
+
         byte type;
         while((type=buffer.get())!=EMPTY)
         {
@@ -447,11 +449,12 @@ public class MemMap<K,V> {
 
             if (key.equals(key1))// found
             {
+                result = getRecord(buffer.position());
                buffer.position(location);
                buffer.put(DELETED);
                numElements--;
 
-                return;
+                return result;
             }
 
             ++index;
@@ -471,7 +474,7 @@ public class MemMap<K,V> {
 
         }
 
-        return ;
+        return result;
 
 
     }
