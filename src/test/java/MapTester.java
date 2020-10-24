@@ -1,10 +1,12 @@
 import offheapmap.EfficientHashMap;
 import org.junit.Test;
 import util.IntegerSerializer;
+import util.JSONSerializer;
 import util.StringSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MapTester {
 
@@ -209,6 +211,37 @@ public class MapTester {
 
 
     }
+
+
+    @Test public void testJSON()
+    {
+
+
+        JSONSerializer ser = new JSONSerializer(MyObject.class);
+
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, MyObject> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+        for (int i=0;i<10;i++) {
+
+            MyObject myObject = new MyObject("Hello " , "World");
+
+            map.put(i, myObject);
+
+            MyObject res = map.get(i);
+
+            assert(myObject.equals(res));
+
+
+
+        }
+
+
+
+    }
+
+
 
 
 
