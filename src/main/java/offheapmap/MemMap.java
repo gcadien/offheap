@@ -286,6 +286,29 @@ public class MemMap<K,V> {
     {
 
         Set<K> keys = new HashSet<>();
+
+        for (int i=0;i<totalElements;i++)
+        {
+            buffer.position(recordSize*i);
+            if (buffer.get()==OCCUPIED) {
+                int len = buffer.getInt();
+                byte[] b = new byte[len];
+                buffer.get(b);
+                K key = (K) keySerializer.deserialize(b);
+                keys.add(key);
+            }
+
+        }
+
+        return keys;
+
+    }
+
+
+    public Set<Map.Entry<K,V>> entrySet()
+    {
+
+        Set<Map.Entry<K,V>> entries = new HashSet<>();
         buffer.position(0);
 
         for (int i=0;i<totalElements;i++)
@@ -295,13 +318,34 @@ public class MemMap<K,V> {
                 byte[] b = new byte[len];
                 buffer.get(b);
                 K key = (K) keySerializer.deserialize(b);
-                keys.add(key);
+                len = buffer.getInt();
+                b = new byte[len];
+                buffer.get(b);
+                V value1 = (V) valueSerializer.deserialize(b);
+
+
+                entries.add(new Map.Entry<K, V>() {
+                    @Override
+                    public K getKey() {
+                        return key;
+                    }
+
+                    @Override
+                    public V getValue() {
+                        return value1;
+                    }
+
+                    @Override
+                    public V setValue(V v) {
+                        return value1;
+                    }
+                });
             }
             buffer.position(recordSize*i);
 
         }
 
-        return keys;
+        return entries;
 
     }
 

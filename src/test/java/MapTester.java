@@ -95,6 +95,29 @@ public class MapTester {
     }
 
 
+    @Test public void testEntrySet()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+
+        for (int i=0;i<100;i++) {
+
+            map.put(i, "Hello World " + i);
+
+        }
+
+        map.entrySet().stream().forEach(entry-> { System.out.println(entry.getKey() + "  " + entry.getValue()); });
+
+
+        assert(map.values().size()==100);
+
+    }
+
+
+
 
     @Test public void testEmpty()
     {

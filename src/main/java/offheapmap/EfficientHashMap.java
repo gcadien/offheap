@@ -89,7 +89,7 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
     public Set<Entry<K, V>> entrySet() {
 
 
-        return null;
+        return memMap.entrySet();
     }
 
     @Override
