@@ -162,6 +162,31 @@ public class MapTester {
     }
 
 
+    @Test public void testPut()
+    {
+        StringSerializer ser = new StringSerializer();
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, String> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+        String prevStr = null;
+        for (int i=0;i<10;i++) {
+            String result = map.put(1, "Hello" + i);
+
+            assert((result==null&& prevStr==null) || prevStr.equals(result));
+
+            prevStr = "Hello" + i;
+
+
+        }
+
+
+
+    }
+
+
+
+
     @Test public void testReSize()
     {
         StringSerializer ser = new StringSerializer();
@@ -222,7 +247,7 @@ public class MapTester {
 
 
 
-    //TODO - see why its hanging
+
     @Test public void test1()  throws Exception {
         StringSerializer ser = new StringSerializer();
         IntegerSerializer iser = new IntegerSerializer();

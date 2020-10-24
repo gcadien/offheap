@@ -99,9 +99,9 @@ public class EfficientHashMap<K,V> implements Map<K,V>{
         checkAndResize();
 
 
-        memMap.put(key,value);
+        return memMap.put(key,value);
 
-        return null;   //TODO - to fix this
+
     }
 
 

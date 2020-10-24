@@ -86,8 +86,9 @@ public class MemMap<K,V> {
             throw new RuntimeException("Record size exceeds max specified , size = "+  length + ",max allowed = " + recordSize);
     }
 
-    protected void put(K key, V value)
+    protected V put(K key, V value)
     {
+        V result = null;
         byte[] serKey = keySerializer.serialize(key) ;
         byte[] serValue = valueSerializer.serialize(value);
 
@@ -116,8 +117,9 @@ public class MemMap<K,V> {
                     if (key.equals(curr))
                     {
                         // overwriting current key , so do not change elements counter.
+                        result = getRecord(location);
                         putRecord(serKey,serValue,location);
-                        return;
+                        return result;
                     }
                     break;
 
@@ -132,14 +134,14 @@ public class MemMap<K,V> {
                     }
                     numElements++;
                     numSpots++;
-                    return ;
+                    return result;
                 case DELETED :
                     curr = getKey();
                     if (key.equals(curr))
                     {
                         putRecord(serKey,serValue,location);
                         numElements++;
-                        return;
+                        return result;
                     }
                     else if (!deletedinPath)
                     {
@@ -171,11 +173,22 @@ public class MemMap<K,V> {
         }
 
 
-
+        return result;
 
 
     }
 
+
+    private V getRecord(int location)
+    {
+           int len = buffer.getInt();
+            byte[] b = new byte[len];
+            buffer.get(b);
+            V value =  (V)valueSerializer.deserialize(b);
+
+            return value;
+
+    }
 
     private void putRecord(byte[] key, byte[] value, int location)
     {
