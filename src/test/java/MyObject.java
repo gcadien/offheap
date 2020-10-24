@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.Objects;
 
-public     class MyObject {
+public class MyObject implements Serializable {
 
     String name;
     String address;

@@ -1,5 +1,6 @@
 import offheapmap.EfficientHashMap;
 import org.junit.Test;
+import util.GenericObjectSerializer;
 import util.IntegerSerializer;
 import util.JSONSerializer;
 import util.StringSerializer;
@@ -222,6 +223,35 @@ public class MapTester {
         IntegerSerializer iser = new IntegerSerializer();
 
         EfficientHashMap<Integer, MyObject> map = new EfficientHashMap<>(100, 1000, iser, ser);
+
+        for (int i=0;i<10;i++) {
+
+            MyObject myObject = new MyObject("Hello " , "World");
+
+            map.put(i, myObject);
+
+            MyObject res = map.get(i);
+
+            assert(myObject.equals(res));
+
+
+
+        }
+
+
+
+    }
+
+
+    @Test public void testGeneric()
+    {
+
+
+        GenericObjectSerializer ser = new GenericObjectSerializer();
+
+        IntegerSerializer iser = new IntegerSerializer();
+
+        EfficientHashMap<Integer, MyObject> map = new EfficientHashMap<>(110, 1000, iser, ser);
 
         for (int i=0;i<10;i++) {
 

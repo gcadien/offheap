@@ -80,7 +80,7 @@ public class MemMap<K,V> {
 
     private void checkRecordSize(byte[] key , byte[] value)
     {
-        int length = key.length + value.length + 1;
+        int length = key.length + value.length + 1 + 8;
 
         if (length>=recordSize)
             throw new RuntimeException("Record size exceeds max specified , size = "+  length + ",max allowed = " + recordSize);
