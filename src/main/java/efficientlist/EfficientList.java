@@ -167,4 +167,33 @@ public class EfficientList<E> implements List<E> {
 
         return tmp;
     }
+
+    static class ELIterator<E> implements Iterator<E>
+    {
+        EfficientList<E> list;
+
+        int index =0;
+
+        public ELIterator(EfficientList<E> list)
+        {
+            this.list = list;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index<list.size();
+        }
+
+        @Override
+        public E next() {
+
+            int spot = list.list.get(index++);
+
+            return list.memMap.get(spot);
+
+
+        }
+    }
+
+
 }
