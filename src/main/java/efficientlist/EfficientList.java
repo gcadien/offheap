@@ -29,7 +29,13 @@ public class EfficientList<E> implements List<E> {
 
     @Override
     public boolean contains(Object o) {
-        return false;
+
+        int index = memMap.find((E) o);
+
+        if (index==-1) return false;
+
+        return list.contains(index);
+
     }
 
     @Override
@@ -59,7 +65,7 @@ public class EfficientList<E> implements List<E> {
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        return list.remove(o);
     }
 
     @Override
@@ -150,7 +156,15 @@ public class EfficientList<E> implements List<E> {
     }
 
     @Override
-    public List<E> subList(int i, int i1) {
-        return null;
+    public List<E> subList(int start, int end) {
+
+        List<E> tmp = new ArrayList<>();
+        for (int i=start;i<end;i++)
+        {
+            tmp.add(memMap.get(list.get(i)));
+        }
+
+
+        return tmp;
     }
 }
