@@ -40,17 +40,31 @@ public class EfficientList<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new ELIterator<>(this);
     }
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+
+        Object[] objects = new Object[list.size()];
+
+        for (int i=0;i<list.size();i++)
+        {
+            objects[i] = memMap.get(list.get(i));
+        }
+        return objects;
     }
 
     @Override
     public <T> T[] toArray(T[] ts) {
-        return null;
+
+
+        for (int i=0;i<list.size();i++)
+        {
+            ts[i] = (T)memMap.get(list.get(i));
+        }
+
+        return ts;
     }
 
     @Override
@@ -70,7 +84,17 @@ public class EfficientList<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection<?> collection) {
-        return false;
+
+        List<Integer>  ints = new ArrayList<>();
+        for (var e : collection)
+        {
+           int index =  memMap.find((E) e);
+           if (index==-1)
+               return false;
+           ints.add(index);
+
+        }
+        return list.containsAll(ints);
     }
 
     @Override
