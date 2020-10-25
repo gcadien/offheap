@@ -1,6 +1,7 @@
 package efficientlist;
 
 import offheapmap.Serializer;
+import offheapstack.MemMapForStack;
 
 import java.util.*;
 
@@ -70,6 +71,8 @@ public class EfficientList<E> implements List<E> {
     @Override
     public boolean add(E e) {
 
+        checkAndResize();
+
         int pos = memMap.add(e);
 
         list.add(pos);
@@ -99,22 +102,29 @@ public class EfficientList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> collection) {
-        return false;
+
+        collection.stream().forEach(c->add(c));
+        return true;
     }
 
     @Override
     public boolean addAll(int i, Collection<? extends E> collection) {
-        return false;
+
+        collection.stream().forEach(c->add(i,c));
+        return true;
+
     }
 
     @Override
     public boolean removeAll(Collection<?> collection) {
-        return false;
+
+        return list.removeAll(collection);
+
     }
 
     @Override
     public boolean retainAll(Collection<?> collection) {
-        return false;
+        return list.retainAll(collection);
     }
 
     @Override
@@ -135,6 +145,8 @@ public class EfficientList<E> implements List<E> {
     @Override
     public E set(int i, E e) {
 
+        checkAndResize();
+
         int index = list.get(i);
         list.set(i,memMap.add(e));
 
@@ -145,6 +157,7 @@ public class EfficientList<E> implements List<E> {
 
     @Override
     public void add(int i, E e) {
+        checkAndResize();
 
         list.add(i,memMap.add(e));
 
@@ -219,5 +232,17 @@ public class EfficientList<E> implements List<E> {
         }
     }
 
+    private void checkAndResize()
+    {
+        if ((memMap.numElements/memMap.totalElements)*100>=75)
+        {
+            if (list.size()*2 < memMap.numElements)  // no need to increase size , just compact
+                 memMap = MemMapForList.resize(memMap,1,list);
+            else
+                memMap = MemMapForList.resize(memMap,2,list);
+
+        }
+
+    }
 
 }

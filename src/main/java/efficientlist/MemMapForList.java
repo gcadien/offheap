@@ -4,6 +4,7 @@ package efficientlist;
 import offheapmap.Serializer;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import static util.BufferUtil.destroyBuffer;
 
@@ -291,35 +292,27 @@ public class MemMapForList<E> {
     }
 
 */
-    protected static<E> MemMapForList<E> resize(MemMapForList<E> orig, int factor)
+    protected static<E> MemMapForList<E> resize(MemMapForList<E> orig, int factor, List<Integer> list)
     {
-
-        //TODO - accept list of positions
 
         MemMapForList<E> resized = new MemMapForList<>(orig.recordSize,orig.totalElements*factor, orig.keySerializer);
         ByteBuffer buffer = orig.buffer;
 
-        buffer.position(0);
-
-        for (int i=0;i<orig.totalElements;i++)
-        {
-                int len = buffer.getInt();
-                byte[] b = new byte[len];
-                buffer.get(b);
-                E value = (E) orig.keySerializer.deserialize(b);
-
-               // resized.push(value);
-
-            buffer.position(orig.recordSize*i);
-
-        }
-
+       for (int i=0;i<list.size();i++)
+       {
+           int index = list.get(i);
+           buffer.position(index);
+           int len = buffer.getInt();
+           byte[] b = new byte[len];
+           buffer.get(b);
+           E value = (E) orig.keySerializer.deserialize(b);
+           int newindex= resized.add(value);
+           list.set(i,newindex);
+       }
 
         destroyBuffer(orig.buffer);  // without this the direct buffer stays in memory.
 
         return resized;
-
-
 
 
     }
