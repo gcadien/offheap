@@ -37,6 +37,26 @@ public class StackTester {
 
     }
 
+    @Test public void testPopEmpty()
+    {
+        StringSerializer ser = new StringSerializer();
+
+        EfficientStack<String> stack = new EfficientStack<>(100, 1000, ser);
+
+
+
+        for (int i=0;i<10;i++)
+        {
+            assert(stack.pop()==null);
+        }
+
+        assert (stack.size()==0);
+
+
+
+    }
+
+
 
     @Test public void testReSize()
     {
