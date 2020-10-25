@@ -245,4 +245,73 @@ public class EfficientList<E> implements List<E> {
 
     }
 
+
+    static class ELListIterator<E> implements ListIterator<E>
+    {
+
+        EfficientList<E> list;
+
+        int index =0;
+
+        public ELListIterator(EfficientList<E> list)
+        {
+            this.list = list;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index<list.size();
+        }
+
+        @Override
+        public E next() {
+
+            int spot = list.list.get(index++);
+
+            return list.memMap.get(spot);
+
+
+        }
+        @Override
+        public boolean hasPrevious() {
+            return index>0;
+        }
+
+        @Override
+        public E previous() {
+            int spot = list.list.get(--index);
+
+            return list.memMap.get(spot);
+        }
+
+        @Override
+        public int nextIndex() {
+            return index;
+        }
+
+        @Override
+        public int previousIndex() {
+            return index-1;
+        }
+
+        @Override
+        public void remove() {
+
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void set(E e) {
+            throw new UnsupportedOperationException();
+
+        }
+
+        @Override
+        public void add(E e) {
+            throw new UnsupportedOperationException();
+
+        }
+    }
+
 }
