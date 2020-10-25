@@ -59,7 +59,7 @@ public class EfficientQueue<E> implements Queue<E> {
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        return memMap.contains((E)o);
     }
 
     @Override
@@ -79,27 +79,39 @@ public class EfficientQueue<E> implements Queue<E> {
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean containsAll(Collection<?> collection) {
-        return false;
+
+        var iterator = collection.iterator();
+        while(iterator.hasNext())
+        {
+            var value = iterator.next();
+            if (!contains(value))
+                return false;
+        }
+
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> collection) {
-        return false;
+
+        collection.stream().forEach(c-> add(c));
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> collection) {
-        return false;
+
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean retainAll(Collection<?> collection) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -196,6 +196,51 @@ public class MemMapForQueue<E> {
 
 
 
+    public boolean contains(E value)
+    {
+        if (numElements==0)
+            return false;
+
+        int start = head;
+        if (start<tail)
+        {
+            while(start<tail)
+            {
+                E value1 = getRecord(start);
+                if (value.equals(value1))
+                    return true;
+                start = start+recordSize;
+            }
+        } else {
+
+            // from start to end of buffer capacity and then from 0 to tail
+            while(start<buffer.capacity())
+            {
+                E value1 = getRecord(start);
+                if (value.equals(value1))
+                    return true;
+                start = start+recordSize;
+
+            }
+
+            start=0;
+            while(start<tail)
+            {
+                E value1 = getRecord(start);
+                if (value.equals(value1))
+                    return true;
+                start = start+recordSize;
+            }
+
+
+        }
+
+
+        return false;
+
+
+    }
+
 
     /*
     public Collection<V> values()
