@@ -121,7 +121,11 @@ public class MemMapForStack<E> {
     }
 
 
-
+    protected E get(int index)
+    {
+        buffer.position(index*recordSize);
+        return getRecord(buffer.position());
+    }
 
 
     protected E pop()

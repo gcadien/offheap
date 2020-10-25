@@ -56,6 +56,29 @@ public class StackTester {
 
     }
 
+    @Test public void testIterator()
+    {
+        StringSerializer ser = new StringSerializer();
+
+        EfficientStack<String> stack = new EfficientStack<>(100, 1000, ser);
+
+
+
+        for (int i=0;i<10;i++)
+        {
+            stack.push(String.valueOf(i));
+        }
+
+
+        stack.iterator().forEachRemaining(System.out::println);
+
+        stack.descendingIterator().forEachRemaining(System.out::println);
+
+
+
+    }
+
+
 
 
     @Test public void testReSize()

@@ -42,12 +42,12 @@ public class EfficientStack<E>  {
 
 
     public Iterator<E> iterator() {
-        return null;
+        return new ESIterator<>(memMap);
     }
 
 
     public Iterator<E> descendingIterator() {
-        return null;
+        return new ESDIterator<>(memMap);
     }
 
 
@@ -70,6 +70,57 @@ public class EfficientStack<E>  {
             memMap = MemMapForStack.resize(memMap,2);
         }
 
+    }
+
+
+    static class ESIterator<E> implements Iterator<E>
+    {
+        public MemMapForStack<E> memMap;
+
+        int count=0;
+
+        public ESIterator(MemMapForStack<E> memMap)
+        {
+            this.memMap = memMap;
+        }
+
+        @Override
+        public boolean hasNext() {
+
+            return count<=memMap.numElements;
+
+        }
+
+        @Override
+        public E next() {
+            return memMap.get(count++);
+        }
+    }
+
+
+    static class ESDIterator<E> implements Iterator<E>
+    {
+        public MemMapForStack<E> memMap;
+
+        int count=0;
+
+        public ESDIterator(MemMapForStack<E> memMap)
+        {
+            this.memMap = memMap;
+            count=memMap.numElements;
+        }
+
+        @Override
+        public boolean hasNext() {
+
+            return count>=0;
+
+        }
+
+        @Override
+        public E next() {
+            return memMap.get(count--);
+        }
     }
 
 
