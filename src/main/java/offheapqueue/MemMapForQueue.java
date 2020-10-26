@@ -4,6 +4,7 @@ package offheapqueue;
 import offheapmap.Serializer;
 
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 import java.util.List;
 
 import static util.BufferUtil.destroyBuffer;
@@ -241,6 +242,51 @@ public class MemMapForQueue<E> {
 
     }
 
+    static class MMQIterator<E> implements Iterator<E>
+    {
+        MemMapForQueue<E> queue ;
+
+         int count ;
+         int start;
+        public MMQIterator(MemMapForQueue<E> queue) {
+            this.queue = queue;
+            this.count = queue.numElements;
+            start = queue.head;
+        }
+
+
+        @Override
+        public boolean hasNext() {
+
+            return (count!=0);
+        }
+
+        @Override
+        public E next() {
+
+            count--;
+
+            if (start>queue.tail)
+            {
+                E value1 = queue.getRecord(start);
+                start = start+queue.recordSize;
+                if (start>=queue.buffer.capacity())
+                    start=0;
+
+                return value1;
+            }
+            else
+            {
+                E value1 = queue.getRecord(start);
+
+                start = start+queue.recordSize;
+                return value1;
+
+            }
+
+        }
+    }
+
 
     /*
     public Collection<V> values()
@@ -360,24 +406,48 @@ public class MemMapForQueue<E> {
 
     }
 
+*/
 
-    protected static<E> MemMapForQueue<E> resize(MemMapForQueue<E> orig, int factor, List<Integer> list)
+
+    protected static<E> MemMapForQueue<E> resize(MemMapForQueue<E> orig, int factor)
     {
 
         MemMapForQueue<E> resized = new MemMapForQueue<>(orig.recordSize,orig.totalElements*factor, orig.keySerializer);
         ByteBuffer buffer = orig.buffer;
 
-       for (int i=0;i<list.size();i++)
-       {
-           int index = list.get(i);
-           buffer.position(index);
-           int len = buffer.getInt();
-           byte[] b = new byte[len];
-           buffer.get(b);
-           E value = (E) orig.keySerializer.deserialize(b);
-           int newindex= resized.add(value);
-           list.set(i,newindex);
-       }
+
+        int start = orig.head;
+        if (start<orig.tail)
+        {
+            while(start<orig.tail)
+            {
+                E value1 = orig.getRecord(start);
+                resized.add(value1);
+
+                start = start+orig.recordSize;
+            }
+        } else {
+
+            // from start to end of buffer capacity and then from 0 to tail
+            while(start<buffer.capacity())
+            {
+                E value1 = orig.getRecord(start);
+                resized.add(value1);
+                start = start+orig.recordSize;
+
+            }
+
+            start=0;
+            while(start<orig.tail)
+            {
+                E value1 = orig.getRecord(start);
+                start = start+orig.recordSize;
+            }
+
+
+        }
+
+
 
         destroyBuffer(orig.buffer);  // without this the direct buffer stays in memory.
 
@@ -387,7 +457,7 @@ public class MemMapForQueue<E> {
     }
 
 
-     */
+
 
 
 }

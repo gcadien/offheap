@@ -64,17 +64,36 @@ public class EfficientQueue<E> implements Queue<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new MemMapForQueue.MMQIterator<>(memMap);
     }
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Iterator<E> iterator = iterator();
+        Object[] objects = new Object[memMap.numElements];
+
+        int i=0;
+        while(iterator.hasNext())
+        {
+            objects[i++] = iterator.next();
+        }
+
+        return objects;
+
     }
 
     @Override
     public <T> T[] toArray(T[] ts) {
-        return null;
+        Iterator<E> iterator = iterator();
+
+
+        int i=0;
+        while(iterator.hasNext())
+        {
+            ts[i++] = (T)iterator.next();
+        }
+
+        return ts;
     }
 
     @Override
