@@ -77,7 +77,7 @@ public class EfficientList<E> implements List<E> {
 
         list.add(pos);
 
-        return false;
+        return true;
     }
 
     @Override
